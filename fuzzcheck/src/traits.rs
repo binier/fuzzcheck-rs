@@ -9,6 +9,11 @@ use fuzzcheck_common::FuzzerEvent;
 use std::fmt::Display;
 use std::marker::PhantomData;
 use std::path::PathBuf;
+use std::rc::Rc;
+use std::sync::Arc;
+
+use crate::fuzzer::PoolStorageIndex;
+use fuzzcheck_common::FuzzerEvent;
 
 /**
  A [`Mutator`] is an object capable of generating/mutating a value for the purpose of
@@ -512,6 +517,22 @@ where
 }
 
 impl<M> MutatorWrapper for Box<M> {
+    type Wrapped = M;
+    #[no_coverage]
+    fn wrapped_mutator(&self) -> &Self::Wrapped {
+        self.as_ref()
+    }
+}
+
+impl<M> MutatorWrapper for Rc<M> {
+    type Wrapped = M;
+    #[no_coverage]
+    fn wrapped_mutator(&self) -> &Self::Wrapped {
+        self.as_ref()
+    }
+}
+
+impl<M> MutatorWrapper for Arc<M> {
     type Wrapped = M;
     #[no_coverage]
     fn wrapped_mutator(&self) -> &Self::Wrapped {
