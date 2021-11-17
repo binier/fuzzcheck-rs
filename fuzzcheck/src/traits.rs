@@ -7,6 +7,7 @@ use crate::fuzzer::PoolStorageIndex;
 use crate::sensors_and_pools::{AndPool, MapSensor};
 use fuzzcheck_common::FuzzerEvent;
 use std::fmt::Display;
+use std::marker::PhantomData;
 use std::path::PathBuf;
 
 /**
@@ -273,6 +274,124 @@ pub trait Serializer {
     ///
     /// This method should never fail.
     fn to_data(&self, value: &Self::Value) -> Vec<u8>;
+}
+
+pub trait MutatorValueConverter {
+    type InnerValue;
+    type Value;
+
+    fn from_inner_value_ref(&self, inner_value: &Self::InnerValue) -> Self::Value;
+
+    fn from_inner_value(&self, inner_value: Self::InnerValue) -> Self::Value {
+        self.from_inner_value_ref(&inner_value)
+    }
+
+    fn to_inner_value_ref(&self, value: &Self::Value) -> Self::InnerValue;
+
+    fn to_inner_value(&self, value: Self::Value) -> Self::InnerValue {
+        self.to_inner_value_ref(&value)
+    }
+}
+
+pub struct ExtendedMutator<V, IV, IM, MVC> {
+    inner: IM,
+    value_converter: MVC,
+    _phantom_v: PhantomData<V>,
+    _phantom_iv: PhantomData<IV>,
+}
+
+impl<V, IV, IM, MVC> ExtendedMutator<V, IV, IM, MVC> {
+    pub fn new(inner: IM, value_converter: MVC) -> Self {
+        Self {
+            inner,
+            value_converter,
+            _phantom_v: PhantomData,
+            _phantom_iv: PhantomData,
+        }
+    }
+}
+
+impl<V, IV, IM, MVC> Mutator<V> for ExtendedMutator<V, IV, IM, MVC>
+where
+    V: 'static + Clone,
+    IV: 'static + Clone,
+    IM: Mutator<IV>,
+    MVC: 'static + MutatorValueConverter<InnerValue = IV, Value = V>,
+{
+    type Cache = IM::Cache;
+    type MutationStep = IM::MutationStep;
+    type ArbitraryStep = IM::ArbitraryStep;
+    type UnmutateToken = IM::UnmutateToken;
+    type RecursingPartIndex = ();
+
+    fn default_arbitrary_step(&self) -> Self::ArbitraryStep {
+        self.inner.default_arbitrary_step()
+    }
+
+    fn validate_value(&self, value: &V) -> Option<(Self::Cache, Self::MutationStep)> {
+        self.inner
+            .validate_value(&self.value_converter.to_inner_value_ref(value))
+    }
+
+    fn max_complexity(&self) -> f64 {
+        self.inner.max_complexity()
+    }
+
+    fn min_complexity(&self) -> f64 {
+        self.inner.min_complexity()
+    }
+
+    fn complexity(&self, value: &V, cache: &Self::Cache) -> f64 {
+        self.inner
+            .complexity(&self.value_converter.to_inner_value_ref(value), cache)
+    }
+
+    fn ordered_arbitrary(&self, step: &mut Self::ArbitraryStep, max_cplx: f64) -> Option<(V, f64)> {
+        self.inner
+            .ordered_arbitrary(step, max_cplx)
+            .map(|(inner_value, cplx)| (self.value_converter.from_inner_value(inner_value), cplx))
+    }
+
+    fn random_arbitrary(&self, max_cplx: f64) -> (V, f64) {
+        let (inner_value, cplx) = self.inner.random_arbitrary(max_cplx);
+        (self.value_converter.from_inner_value(inner_value), cplx)
+    }
+
+    fn ordered_mutate(
+        &self,
+        value: &mut V,
+        cache: &mut Self::Cache,
+        step: &mut Self::MutationStep,
+        max_cplx: f64,
+    ) -> Option<(Self::UnmutateToken, f64)> {
+        let mut inner_value = self.value_converter.to_inner_value_ref(value);
+        let res = self.inner.ordered_mutate(&mut inner_value, cache, step, max_cplx);
+        *value = self.value_converter.from_inner_value(inner_value);
+        res
+    }
+
+    fn random_mutate(&self, value: &mut V, cache: &mut Self::Cache, max_cplx: f64) -> (Self::UnmutateToken, f64) {
+        let mut inner_value = self.value_converter.to_inner_value_ref(value);
+        let res = self.inner.random_mutate(&mut inner_value, cache, max_cplx);
+        *value = self.value_converter.from_inner_value(inner_value);
+        res
+    }
+
+    fn unmutate(&self, value: &mut V, cache: &mut Self::Cache, t: Self::UnmutateToken) {
+        let mut inner_value = self.value_converter.to_inner_value_ref(value);
+        self.inner.unmutate(&mut inner_value, cache, t);
+        *value = self.value_converter.from_inner_value(inner_value);
+    }
+
+    fn default_recursing_part_index(&self, _: &V, _: &Self::Cache) -> Self::RecursingPartIndex {}
+
+    fn recursing_part<'a, T, M>(&self, _: &M, _: &'a V, _: &mut Self::RecursingPartIndex) -> Option<&'a T>
+    where
+        T: Clone + 'static,
+        M: Mutator<T>,
+    {
+        None
+    }
 }
 
 /**

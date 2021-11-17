@@ -80,7 +80,11 @@ pub use fuzzer::ReasonForStopping;
 #[doc(inline)]
 pub use mutators::DefaultMutator;
 #[doc(inline)]
+pub use traits::ExtendedMutator;
+#[doc(inline)]
 pub use traits::Mutator;
+#[doc(inline)]
+pub use traits::MutatorValueConverter;
 #[doc(inline)]
 pub use traits::MutatorWrapper;
 #[doc(inline)]
