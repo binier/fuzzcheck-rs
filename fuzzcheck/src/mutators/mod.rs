@@ -51,6 +51,7 @@ pub mod integer;
 pub mod integer_within_range;
 pub mod map;
 pub mod mutations;
+pub mod net;
 pub mod never;
 pub mod option;
 pub mod range;
