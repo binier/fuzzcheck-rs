@@ -41,6 +41,7 @@ pub mod boxed;
 pub mod char;
 pub mod character_classes;
 pub mod dictionary;
+pub mod string;
 pub mod either;
 pub mod enums;
 pub mod fixed_len_vector;
