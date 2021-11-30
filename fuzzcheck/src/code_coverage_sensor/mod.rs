@@ -129,6 +129,12 @@ impl Sensor for CodeCoverageSensor {
                         observations.push((index, *single));
                     }
                     index += 1;
+                    for &single in coverage.single_counters.iter().skip(1) {
+                        if *single != 0 {
+                            handler((index, *single));
+                        }
+                        index += 1;
+                    }
                 }
                 for expr in &coverage.expression_counters {
                     let computed = expr.compute();
