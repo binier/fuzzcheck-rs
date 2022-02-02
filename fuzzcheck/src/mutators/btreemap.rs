@@ -60,8 +60,6 @@ impl<K, V> DefaultMutator for BTreeMap<K, V>
 where
     K: 'static + Clone + Ord + DefaultMutator,
     V: 'static + Clone + DefaultMutator,
-    K::Mutator: Clone,
-    V::Mutator: Clone,
 {
     type Mutator = BTreeMapMutator<K, V>;
     #[no_coverage]
