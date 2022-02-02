@@ -38,6 +38,7 @@ pub mod arc;
 pub mod array;
 pub mod bool;
 pub mod boxed;
+pub mod btreemap;
 pub mod char;
 pub mod character_classes;
 pub mod dictionary;
