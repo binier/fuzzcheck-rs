@@ -703,3 +703,58 @@ mod tuple14 {
     extern crate self as fuzzcheck;
     fuzzcheck_mutators_derive::make_basic_tuple_mutator!(14);
 }
+pub use tuple15::{Tuple15, Tuple15Mutator};
+mod tuple15 {
+    extern crate self as fuzzcheck;
+    fuzzcheck_mutators_derive::make_basic_tuple_mutator!(15);
+}
+pub use tuple16::{Tuple16, Tuple16Mutator};
+mod tuple16 {
+    extern crate self as fuzzcheck;
+    fuzzcheck_mutators_derive::make_basic_tuple_mutator!(16);
+}
+pub use tuple17::{Tuple17, Tuple17Mutator};
+mod tuple17 {
+    extern crate self as fuzzcheck;
+    fuzzcheck_mutators_derive::make_basic_tuple_mutator!(17);
+}
+pub use tuple18::{Tuple18, Tuple18Mutator};
+mod tuple18 {
+    extern crate self as fuzzcheck;
+    fuzzcheck_mutators_derive::make_basic_tuple_mutator!(18);
+}
+pub use tuple19::{Tuple19, Tuple19Mutator};
+mod tuple19 {
+    extern crate self as fuzzcheck;
+    fuzzcheck_mutators_derive::make_basic_tuple_mutator!(19);
+}
+pub use tuple20::{Tuple20, Tuple20Mutator};
+mod tuple20 {
+    extern crate self as fuzzcheck;
+    fuzzcheck_mutators_derive::make_basic_tuple_mutator!(20);
+}
+pub use tuple21::{Tuple21, Tuple21Mutator};
+mod tuple21 {
+    extern crate self as fuzzcheck;
+    fuzzcheck_mutators_derive::make_basic_tuple_mutator!(21);
+}
+pub use tuple22::{Tuple22, Tuple22Mutator};
+mod tuple22 {
+    extern crate self as fuzzcheck;
+    fuzzcheck_mutators_derive::make_basic_tuple_mutator!(22);
+}
+pub use tuple23::{Tuple23, Tuple23Mutator};
+mod tuple23 {
+    extern crate self as fuzzcheck;
+    fuzzcheck_mutators_derive::make_basic_tuple_mutator!(23);
+}
+pub use tuple24::{Tuple24, Tuple24Mutator};
+mod tuple24 {
+    extern crate self as fuzzcheck;
+    fuzzcheck_mutators_derive::make_basic_tuple_mutator!(24);
+}
+pub use tuple25::{Tuple25, Tuple25Mutator};
+mod tuple25 {
+    extern crate self as fuzzcheck;
+    fuzzcheck_mutators_derive::make_basic_tuple_mutator!(25);
+}
