@@ -48,6 +48,7 @@ pub mod enums;
 pub mod fixed_len_vector;
 #[cfg(feature = "grammar_mutator")]
 #[doc(cfg(feature = "grammar_mutator"))]
+pub mod float;
 pub mod grammar;
 pub mod integer;
 pub mod integer_within_range;
