@@ -510,7 +510,7 @@ fuzzcheck {minify} --{input_file} "artifacts/crash.json"
 
     Minify the test input defined in the file "artifacts/crash.json".
     It will put minified inputs in the folder artifacts/crash.minified/
-    and name them {{complexity}}-{{hash}}.json. 
+    and name them {{complexity}}-{{hash}}.json.
     For example, artifacts/crash.minified/4213--8cd7777109b57b8c.json
     is a minified input of complexity 42.13.
 "#,
@@ -605,9 +605,9 @@ where
     /// Launch the fuzz test!
     #[no_coverage]
     pub fn launch(self) -> FuzzingResult<V> {
-        #[cfg(fuzzing)]
+        #[cfg(feature = "fuzzing")]
         return self.launch_even_if_cfg_fuzzing_is_not_set();
-        #[cfg(not(fuzzing))]
+        #[cfg(not(feature = "fuzzing"))]
         return FuzzingResult {
             found_test_failure: true,
             reason_for_stopping: crate::fuzzer::ReasonForStopping::LaunchedFuzzcheckWithoutCfgFuzzing,
