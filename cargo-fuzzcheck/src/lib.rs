@@ -36,7 +36,7 @@ pub fn launch_executable(
     let child = if let Some(name_package) = &name_package {
         let compiled = Command::new("cargo")
             .env("CARGO_BUILD_PIPELINING", "false")
-            .env("RUSTFLAGS", "--cfg fuzzing -Ccodegen-units=1")
+            .env("RUSTFLAGS", "-Ccodegen-units=1")
             .arg("rustc")
             .args(compiled_target.to_args())
             .args(cargo_args)
@@ -44,6 +44,7 @@ pub fn launch_executable(
             .arg("--release")
             .arg("--all-features")
             .args(["--target-dir", BUILD_FOLDER])
+            .args(["--features", "fuzzing"])
             .arg("--")
             .arg("--test")
             .args(["--cfg", "test"])
@@ -99,7 +100,7 @@ pub fn launch_executable(
             .env("FUZZCHECK_ARGS", args)
             .env(
                 "RUSTFLAGS",
-                "-Zinstrument-coverage=except-unused-functions -Zno-profiler-runtime --cfg fuzzing -Ccodegen-units=1",
+                "-Zinstrument-coverage=except-unused-functions -Zno-profiler-runtime -Ccodegen-units=1",
             )
             .arg("test")
             .args(compiled_target.to_args())
@@ -107,6 +108,7 @@ pub fn launch_executable(
             .args(["--target", TARGET])
             .arg("--release")
             .args(["--target-dir", BUILD_FOLDER])
+            .args(["--features", "fuzzing"])
             .arg("--")
             .arg("--nocapture")
             .arg("--exact")

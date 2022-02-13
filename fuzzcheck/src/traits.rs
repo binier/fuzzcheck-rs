@@ -12,9 +12,6 @@ use std::path::PathBuf;
 use std::rc::Rc;
 use std::sync::Arc;
 
-use crate::fuzzer::PoolStorageIndex;
-use fuzzcheck_common::FuzzerEvent;
-
 /**
  A [`Mutator`] is an object capable of generating/mutating a value for the purpose of
  fuzz-testing.
@@ -333,9 +330,14 @@ where
         self.inner.default_arbitrary_step()
     }
 
-    fn validate_value(&self, value: &V) -> Option<(Self::Cache, Self::MutationStep)> {
+    fn validate_value(&self, value: &V) -> Option<Self::Cache> {
         self.inner
             .validate_value(&self.value_converter.to_inner_value_ref(value))
+    }
+
+    fn default_mutation_step(&self, value: &V, cache: &Self::Cache) -> Self::MutationStep {
+        self.inner
+            .default_mutation_step(&self.value_converter.to_inner_value_ref(value), cache)
     }
 
     fn max_complexity(&self) -> f64 {
