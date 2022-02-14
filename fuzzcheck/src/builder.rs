@@ -605,13 +605,7 @@ where
     /// Launch the fuzz test!
     #[no_coverage]
     pub fn launch(self) -> FuzzingResult<V> {
-        #[cfg(feature = "fuzzing")]
         return self.launch_even_if_cfg_fuzzing_is_not_set();
-        #[cfg(not(feature = "fuzzing"))]
-        return FuzzingResult {
-            found_test_failure: true,
-            reason_for_stopping: crate::fuzzer::ReasonForStopping::LaunchedFuzzcheckWithoutCfgFuzzing,
-        };
     }
 
     /// do not use
