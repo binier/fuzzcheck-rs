@@ -97,6 +97,18 @@ where
         1.0 + if cplx <= 0.0 { len as f64 } else { cplx }
     }
 }
+
+impl<T, M> Default for VecMutator<T, M>
+where
+    T: Clone + DefaultMutator<Mutator = M> + 'static,
+    M: Mutator<T>,
+{
+    #[no_coverage]
+    fn default() -> Self {
+        VecMutator::new(T::default_mutator(), 0..=usize::MAX)
+    }
+}
+
 impl<T, M> Mutator<Vec<T>> for VecMutator<T, M>
 where
     T: Clone + 'static,
