@@ -100,12 +100,12 @@ where
 
 impl<T, M> Default for VecMutator<T, M>
 where
-    T: Clone + DefaultMutator<Mutator = M> + 'static,
-    M: Mutator<T>,
+    T: Clone + 'static,
+    M: Mutator<T> + Default,
 {
     #[no_coverage]
     fn default() -> Self {
-        VecMutator::new(T::default_mutator(), 0..=usize::MAX)
+        VecMutator::new(M::default(), 0..=usize::MAX)
     }
 }
 
