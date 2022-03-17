@@ -31,6 +31,12 @@ where
     }
     #[no_coverage]
     fn to_data(&self, value: &Self::Value) -> Vec<u8> {
-        serde_json::to_vec(value).unwrap()
+        match serde_json::to_vec(value) {
+            Ok(ret) => ret,
+            Err(_) => {
+                let ret = format!("{{\"Err\":{:#04X?}}}", bincode::serialize(value).unwrap());
+                ret.into_bytes()
+            }
+        }
     }
 }
