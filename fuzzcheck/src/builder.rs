@@ -239,7 +239,7 @@ where
     serializer: Box<dyn Serializer<Value = V>>,
     sensor: Sens,
     pool: P,
-    arguments: Arguments,
+    pub arguments: Arguments,
     _phantom: PhantomData<*const V>,
 }
 
