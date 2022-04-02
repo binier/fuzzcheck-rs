@@ -49,6 +49,7 @@ pub fn launch_executable(
             .arg("--test")
             .args(["--cfg", "test"])
             .args(["-Zinstrument-coverage=except-unused-functions", "-Zno-profiler-runtime"])
+            .args(["-Coverflow-checks=yes", "-Cforce-frame-pointers", "-g"])
             .stdout(stdio())
             .stderr(stdio())
             .spawn()?
@@ -100,7 +101,7 @@ pub fn launch_executable(
             .env("FUZZCHECK_ARGS", args)
             .env(
                 "RUSTFLAGS",
-                "-Zinstrument-coverage=except-unused-functions -Zno-profiler-runtime -Ccodegen-units=1",
+                "-Zinstrument-coverage=except-unused-functions -Zno-profiler-runtime -Ccodegen-units=1 -Coverflow-checks=yes -Cforce-frame-pointers -g",
             )
             .arg("test")
             .args(compiled_target.to_args())
